@@ -21,10 +21,10 @@ const setTransition = function (el, prop) {
   el.style.WebkitTransition = prop
 }
 
-class ImbParallax {
+class LefitParallax {
   constructor(props = {
     boxSelector: '.parallax-box',
-    layersSelector: '.layers',
+    layersSelector: '.layer',
     auto: true
   }) {
     this.props = props
@@ -33,6 +33,9 @@ class ImbParallax {
   }
   init({boxSelector, layersSelector, auto}) {
     this.box = document.querySelector(boxSelector)
+    if (!this.box) {
+      throw Error('请先传入视差容器选择器: boxSelector')
+    }
     this.layers = [].slice.call(this.box.querySelectorAll(layersSelector))
     let rect = this.box.getBoundingClientRect()
     let offsetLeft = rect.left + document.body.scrollLeft
@@ -99,4 +102,36 @@ class ImbParallax {
   }
 }
 
-export default ImbParallax
+export default {
+  LefitParallax,
+  install(Vue) {
+    Vue.component('lefit-parallax', {
+      name: 'LefitParallax',
+      render(createElement) {
+        this.layers = this.$slots.layer ? this.$slots.layer : this.$slots
+        this.layers.forEach(v => {
+          let className = v.data.attrs.class
+          v.data.attrs.class = className ? className.replace(/layer?/, 'layer') : 'layer' 
+        })
+        return createElement('div', {
+          attrs: {
+            class: 'parallax-box'
+          }
+        }, this.layers)
+      },
+      data() {
+        return {
+          layers: [],
+          parallaxBox: null,
+        }
+      },
+      mounted() {
+        console.log(this.$el.className)
+        this.parallaxBox = new LefitParallax({
+          boxSelector: '.parallax-box',
+          layersSelector: '.layer'
+        })
+      }
+    })
+  }
+}

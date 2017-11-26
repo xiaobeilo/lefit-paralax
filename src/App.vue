@@ -16,11 +16,15 @@
       <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
     </ul>
+
+    <lefit-parallax>
+      <img src="" slot="layer" alt="">
+    </lefit-parallax>
   </div>
 </template>
 
 <script>
-import ImbParallax from './parallax'
+// import ImbParallax from './parallax'
 export default {
   name: 'app',
   data () {
@@ -30,12 +34,12 @@ export default {
     }
   },
   mounted() {
-    this.parallaxBox = new ImbParallax({
-      boxSelector: '.test-box',
-      layersSelector: '.test-layer',
-      auto: false
-    })
-    this.parallaxBox.start()
+    // this.parallaxBox = new ImbParallax({
+    //   boxSelector: '.test-box',
+    //   layersSelector: '.test-layer',
+    //   auto: false
+    // })
+    // this.parallaxBox.start()
   }
 }
 </script>
