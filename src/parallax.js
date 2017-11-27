@@ -22,12 +22,12 @@ const setTransition = function (el, prop) {
 }
 
 class LefitParallax {
-  constructor(props = {
-    boxSelector: '.parallax-box',
-    layersSelector: '.layer',
-    auto: true
-  }) {
-    this.props = props
+  constructor(props) {
+    this.props = Object.assign({
+      boxSelector: '.parallax-box',
+      layersSelector: '.layer',
+      auto: true
+    }, props)
     this.orientationData = null
     this.init(this.props)
   }
@@ -50,10 +50,10 @@ class LefitParallax {
 
     this.layers.forEach(layer => {
       layer.ox = layer.oy = layer.mx = layer.my = 0
-      layer.depth = parseFloat(layer.getAttribute('data-depth') || 0.5)
+      layer.depth = parseFloat(layer.getAttribute('data-depth') || parseFloat(layer.getAttribute('depth')) || 0.5)
     })
 
-    auto && this.start()
+    this.props.auto && this.start()
   }
   start() {
     window.addEventListener('deviceorientation', this.deviceorientationHandle.bind(this))
@@ -108,11 +108,7 @@ export default {
     Vue.component('lefit-parallax', {
       name: 'LefitParallax',
       render(createElement) {
-        this.layers = this.$slots.layer ? this.$slots.layer : this.$slots
-        this.layers.forEach(v => {
-          let className = v.data.attrs.class
-          v.data.attrs.class = className ? className.replace(/layer?/, 'layer') : 'layer' 
-        })
+        this.layers = this.$slots.default || []
         return createElement('div', {
           attrs: {
             class: 'parallax-box'
@@ -126,11 +122,14 @@ export default {
         }
       },
       mounted() {
-        console.log(this.$el.className)
+        this.layers.forEach(v => {
+          v.elm.className = v.elm.className ? v.elm.className + ' layer' : 'layer' 
+        })
         this.parallaxBox = new LefitParallax({
           boxSelector: '.parallax-box',
           layersSelector: '.layer'
         })
+        window.parallaxBox = this.parallaxBox
       }
     })
   }
